@@ -25,7 +25,7 @@ def upload_function(instance, filename):
 
 class Achievement(models.Model):
     business = models.ForeignKey(Business, on_delete=models.CASCADE, null=True)
-    name = models.CharField(max_length=10t0, blank=False, null=False)
+    name = models.CharField(max_length=100, blank=False, null=False)
     points = models.IntegerField(default=1, null=False)
     code = models.CharField(max_length=100, blank=False, null=False, unique=True)
     category = models.CharField(max_length=10, choices=ACHIEVEMENT_TYPES, default=ACHIEVEMENT_TYPES[0])
