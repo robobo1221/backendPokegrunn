@@ -125,6 +125,7 @@ STATIC_ROOT = ''
 STATIC_URL = f'/{STATICFILES_DIRS[0]}/'
 
 IMAGES_DIR = f'{STATICFILES_DIRS[0]}/images'
+QRCODE_DIR = f'{IMAGES_DIR}/qrcode'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
