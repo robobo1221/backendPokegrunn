@@ -1,6 +1,6 @@
 from django.urls import path, include
-from . import views
+from .views import RegisterAchievementToUser
 
 urlpatterns = [
-    
+    path('register-achievement', RegisterAchievementToUser.as_view()),
 ]

@@ -1,22 +1,11 @@
 from django.db import models
 from django.conf import settings
 from django.core.validators import EmailValidator
+from business.models import Business
 
 import uuid
 import qrcode
 import os
-
-class Business(models.Model):
-    name = models.CharField(max_length=100, blank=False, null=False)
-    email = models.CharField(max_length=100, blank=True, default="", null=True, validators=[EmailValidator()])
-    address = models.TextField(blank=True, null=True)
-    phone_number = models.CharField(max_length=20, blank=True, null=True)
-    
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return self.name
 
 
 ACHIEVEMENT_TYPES = (
@@ -42,8 +31,15 @@ class Achievement(models.Model):
     category = models.CharField(max_length=10, choices=ACHIEVEMENT_TYPES, default=ACHIEVEMENT_TYPES[0])
     image = models.ImageField(upload_to=upload_function, null=True, blank=True)
     qrcode = models.ImageField(upload_to=upload_function_qr, null=False)
-    langitude = models.DecimalField(max_digits=22, decimal_places=16, null=False)
+    latitude = models.DecimalField(max_digits=22, decimal_places=16, null=False)
     longitude = models.DecimalField(max_digits=22, decimal_places=16, null=False)
+
+    description = models.TextField(null=False, max_length=512, blank=True, default="")
+
+    start_date = models.DateField(null=True)
+    end_date = models.DateField(null=True)
+    start_time = models.TimeField(null=True)
+    end_time = models.TimeField(null=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
