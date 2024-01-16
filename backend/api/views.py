@@ -39,6 +39,11 @@ class RegisterAchievementToUser(APIView):
 
         return Response({'success': 'Achievement registered successfully'}, status=status.HTTP_201_CREATED)
 
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ("id", "username", "first_name", "last_name", "email")
+
 class AchievementSerializer(serializers.ModelSerializer):
     category = serializers.SerializerMethodField()
     image_url = serializers.SerializerMethodField()
@@ -133,4 +138,19 @@ class GetAchievementCode(APIView):
             return Response({'error': 'No achievement found with this code'}, status=status.HTTP_400_BAD_REQUEST)
         
         return Response(AchievementSerializer(achievement.get(), context={'request': request}).data, status=status.HTTP_200_OK)
+    
+class GetUser(APIView):
+    def get(self, request, username):
+        user = User.objects.filter(username=username)
+
+        if not user:
+            return Response({'error': 'No user found with thi username'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        return Response(UserSerializer(user.first()).data, status=status.HTTP_200_OK)
+    
+class GetUsers(APIView):
+    def get(self, request):
+        users = User.objects.all()
+        
+        return Response(UserSerializer(users, many=True).data, status=status.HTTP_200_OK)
 

@@ -23,6 +23,8 @@ Volg de stappen en daarna kun je met die credentials inloggen op `https://localh
 - `/api/achievements` Laat alle achievements zien.
 - `/api/achievement/[ID]` Laat achievement zien op basis van id.
 - `/api/achievement-code/[CODE]` laat achievement zien op basis van code.
+- `/api/user/[USERNAME]` laat user zien op basis van username
+- `/api/users/` laat alle users zien
 
 -----
 
