@@ -41,29 +41,43 @@ class RegisterAchievementToUser(APIView):
 
 class AchievementSerializer(serializers.ModelSerializer):
     category = serializers.SerializerMethodField()
+    image_url = serializers.SerializerMethodField()
     class Meta:
         model = Achievement
-        fields = ('id', 'name', 'code', 'description', 'points', 'category', 'latitude', 'longitude', 'start_date', 'end_date', 'start_time', 'end_time')
+        fields = ('id', 'name', 'code', 'description', 'points', 'category', 'latitude', 'longitude', 'start_date', 'end_date', 'start_time', 'end_time', 'image_url')
 
     def get_category(self, obj):
         return obj.get_category_display()
+    
+    def get_image_url(self, obj):
+        request = self.context.get('request')
+        if obj.image:
+            return request.build_absolute_uri(obj.image.url)
+        return None
 
 class UserAchievementSerializer(serializers.ModelSerializer):
     achievement = AchievementSerializer()
     class Meta:
         model = UserAchievement
         fields = ('achievement',)
+
+    def __init__(self, *args, **kwargs):
+        context = kwargs.pop('context', None)
+        super(UserAchievementSerializer, self).__init__(*args, **kwargs)
+
+        if context:
+            self.fields['achievement'] = AchievementSerializer(context=context)
 class GetUserAchievements(APIView):
     def get(self, request):
         username = request.query_params.get("username")
 
         if not username:
-            return Response({'error': 'No username specified'})
+            return Response({'error': 'No username specified'}, status=status.HTTP_400_BAD_REQUEST)
         
         user_achievements = UserAchievement.objects.filter(user__username=username)
-        serializer = UserAchievementSerializer(user_achievements, many=True)
+        serializer = UserAchievementSerializer(user_achievements, many=True, context={'request': request})
 
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 def distance(lat1, lon1, lat2, lon2): 
     R = 6371  # Radius of the earth in km 
@@ -99,6 +113,24 @@ class GetAchievements(APIView):
                 )
             )
 
-        serializer = AchievementSerializer(achievements, many=True)
-        return Response(serializer.data)
-            
+        serializer = AchievementSerializer(achievements, many=True, context={'request': request})
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+class GetAchievementId(APIView):
+    def get(self, request, id):
+        achievement = Achievement.objects.filter(pk=id)
+
+        if not achievement:
+            return Response({'error': 'No achievement found with this id'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        return Response(AchievementSerializer(achievement.get(), context={'request': request}).data, status=status.HTTP_200_OK)
+    
+class GetAchievementCode(APIView):
+    def get(self, request, code):
+        achievement = Achievement.objects.filter(code=code)
+
+        if not achievement:
+            return Response({'error': 'No achievement found with this code'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        return Response(AchievementSerializer(achievement.get(), context={'request': request}).data, status=status.HTTP_200_OK)
+

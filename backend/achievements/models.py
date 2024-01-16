@@ -21,7 +21,11 @@ def upload_function_qr(instance, filename):
     return img_path
 
 def upload_function(instance, filename):
-    pass
+    img_path = '/'.join([settings.IMAGES_DIR, instance.code[0:2], instance.code[2:4], instance.code[4:6], instance.code[6:8], f"{instance.code[8:10]}.jpg"])
+
+    os.makedirs(os.path.dirname(img_path), exist_ok=True)
+
+    return img_path
 
 class Achievement(models.Model):
     business = models.ForeignKey(Business, on_delete=models.CASCADE, null=True)
