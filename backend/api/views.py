@@ -2,6 +2,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from datetime import datetime
+from rest_framework import serializers
+
 
 
 from achievements.models import Achievement
@@ -36,3 +38,34 @@ class RegisterAchievementToUser(APIView):
         user_achievement.save()
 
         return Response({'success': 'Achievement registered successfully'}, status=status.HTTP_201_CREATED)
+
+class AchievementSerializer(serializers.ModelSerializer):
+    category = serializers.SerializerMethodField()
+    class Meta:
+        model = Achievement
+        fields = ('id', 'name', 'code', 'description', 'points', 'category', 'latitude', 'longitude', 'start_date', 'end_date', 'start_time', 'end_time')
+
+    def get_category(self, obj):
+        return obj.get_category_display()
+
+class UserAchievementSerializer(serializers.ModelSerializer):
+    achievement = AchievementSerializer()
+    class Meta:
+        model = UserAchievement
+        fields = ('achievement',)
+class GetUserAchievements(APIView):
+    def get(self, request):
+        username = request.query_params.get("username")
+
+        if not username:
+            return Response({'error': 'No username specified'})
+        
+        user_achievements = UserAchievement.objects.filter(user__username=username)
+        serializer = UserAchievementSerializer(user_achievements, many=True)
+
+        return Response(serializer.data)
+
+        #longitude = request.query_params.get("longitude")
+        #latitude = request.query_params.get("latitude")
+        #if longitude and latitude:
+            

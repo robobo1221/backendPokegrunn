@@ -36,10 +36,10 @@ class Achievement(models.Model):
 
     description = models.TextField(null=False, max_length=512, blank=True, default="")
 
-    start_date = models.DateField(null=True)
-    end_date = models.DateField(null=True)
-    start_time = models.TimeField(null=True)
-    end_time = models.TimeField(null=True)
+    start_date = models.DateField(null=True, blank=True)
+    end_date = models.DateField(null=True, blank=True)
+    start_time = models.TimeField(null=True, blank=True)
+    end_time = models.TimeField(null=True, blank=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

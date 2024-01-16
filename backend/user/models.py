@@ -18,3 +18,6 @@ class UserAchievement(models.Model):
 
     def __str__(self) -> str:
         return f"{self.user.username} -> {self.achievement.name}"
+    
+    class Meta:
+        unique_together = ('user', 'achievement')
