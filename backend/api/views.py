@@ -3,8 +3,8 @@ from rest_framework.response import Response
 from rest_framework import status
 from datetime import datetime
 from rest_framework import serializers
-
-
+from django.db import models
+import math
 
 from achievements.models import Achievement
 from user.models import User, UserAchievement
@@ -65,7 +65,40 @@ class GetUserAchievements(APIView):
 
         return Response(serializer.data)
 
-        #longitude = request.query_params.get("longitude")
-        #latitude = request.query_params.get("latitude")
-        #if longitude and latitude:
+def distance(lat1, lon1, lat2, lon2): 
+    R = 6371  # Radius of the earth in km 
+    dLat = math.radians(lat2 - lat1) 
+    dLon = math.radians(lon2 - lon1) 
+    a = math.sin(dLat / 2) * math.sin(dLat / 2) + math.cos(math.radians(lat1)) * math.cos(math.radians(lat2)) * math.sin(dLon / 2) * math.sin(dLon / 2) 
+    c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a)) 
+    d = R * c  # Distance in km 
+    return d
+
+class GetAchievements(APIView):
+    def get(self, request):
+        username = request.query_params.get("username")
+        longitude = request.query_params.get("longitude")
+        latitude = request.query_params.get("latitude")
+        maxnum = request.query_params.get("max")
+
+        achievements = Achievement.objects.all()
+
+        if username:
+            achievements = achievements.exclude(
+                userachievement__user__username=username
+            )
+
+        if maxnum:
+            achievements = achievements[:int(maxnum)]
+
+        if longitude and latitude:
+            achievements = sorted(
+                achievements,
+                key=lambda achievement: distance(
+                    float(achievement.latitude), float(achievement.longitude), float(latitude), float(longitude)
+                )
+            )
+
+        serializer = AchievementSerializer(achievements, many=True)
+        return Response(serializer.data)
             
