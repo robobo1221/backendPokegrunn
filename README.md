@@ -14,11 +14,11 @@ to run:
 
 ### Endpoints:
 
-`/api/register-achievement` koppelt een user aan een achievement.
-`/api/user-achievements` Laat alle achievements zien van een user.
-`/api/achievements` Laat alle achievements zien.
-`/api/achievement/[ID]` Laat achievement zien op basis van id.
-`/api/achievement-code/[CODE]` laat achievement zien op basis van code.
+- `/api/register-achievement` koppelt een user aan een achievement.
+- `/api/user-achievements` Laat alle achievements zien van een user.
+- `/api/achievements` Laat alle achievements zien.
+- `/api/achievement/[ID]` Laat achievement zien op basis van id.
+- `/api/achievement-code/[CODE]` laat achievement zien op basis van code.
 
 -----
 
