@@ -3,14 +3,12 @@ Backend for pokegrunn
 
 to build:
 - Download and install Docker
-- Inside root directory execute docker-compose up --build
+- Inside root directory execute `docker-compose up --build`
 
 to run:
-- do docker-compose up
+- do `docker-compose up`
 
-Om de admin te kunnen gebruiken en achievements to te voegen moet je eerst een superuser aanmaken. Dit doe je door de terminal van de docker container te openen en het volgende commando in te typen:
-
-python manage.py createsuperuser
+Om de admin te kunnen gebruiken en achievements to te voegen moet je eerst een superuser aanmaken. Dit doe je door de terminal van de docker container te openen en het volgende commando in te typen: `python manage.py createsuperuser`
 
 Volg de stappen en daarna kun je met die credentials inloggen op `https://localhost:8000/admin`
 
